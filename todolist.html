@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prakhar's To-Do List</title>
+  <h1> FATHER'S DAY GIFT </h1>
+<h3>    Abse kaam bhulna band!!! <br>
+List banwane ki jagah yaha apna kaam daliye aor complete ho jane pe delete kar dijiye</h3>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .todo-item input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    .todo-item .task {
+      flex-grow: 1;
+    }
+
+    .todo-form input[type="text"] {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    .todo-form input[type="submit"] {
+      display: block;
+      width: 100%;
+      padding: 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Papa ki To-Do List</h1>
+    <div class="todo-list">
+      <div class="todo-items"></div>
+      <form class="todo-form" onsubmit="addTodoItem(event)">
+        <input type="text" id="taskInput" placeholder="Enter a task" required>
+        <input type="submit" value="Add Task">
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Retrieve stored tasks from localStorage
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    // Display stored tasks on page load
+    renderTasks();
+
+    // Add a new task to the list
+    function addTodoItem(event) {
+      event.preventDefault();
+      const taskInput = document.getElementById('taskInput');
+      const task = taskInput.value.trim();
+
+      if (task !== '') {
+        tasks.push(task);
+        taskInput.value = '';
+        renderTasks();
+        saveTasks();
+      }
+    }
+
+    // Render the tasks on the page
+    function renderTasks() {
+      const todoItems = document.querySelector('.todo-items');
+      todoItems.innerHTML = '';
+
+      tasks.forEach((task, index) => {
+        const todoItem = document.createElement('div');
+        todoItem.className = 'todo-item';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.addEventListener('change', () => toggleTask(index));
+
+        const taskText = document.createElement('div');
+        taskText.className = 'task';
+        taskText.textContent = task;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => deleteTask(index));
+
+        todoItem.appendChild(checkbox);
+        todoItem.appendChild(taskText);
+        todoItem.appendChild(deleteButton);
+        todoItems.appendChild(todoItem);
+      });
+    }
+
+    // Toggle task completion status
+    function toggleTask(index) {
+      tasks[index] = tasks[index].startsWith('✅ ') ? tasks[index].substr(2) : '✅ ' + tasks[index];
+      renderTasks();
+      saveTasks();
+    }
+
+    // Delete a task
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      renderTasks();
+      saveTasks();
+    }
+
+    // Save tasks to localStorage
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+  </script>
+</body>
+</html>
